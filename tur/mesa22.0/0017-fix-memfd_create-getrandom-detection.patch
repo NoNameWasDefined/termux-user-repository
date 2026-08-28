@@ -1,0 +1,30 @@
+Backported from https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/37630
+diff --git a/meson.build b/meson.build
+index 6e80e38fb67..fc7dc11f0a0 100644
+--- a/meson.build
++++ b/meson.build
+@@ -1390,13 +1390,22 @@ foreach h : ['linux/futex.h', 'endian.h', 'dlfcn.h', 'sys/shm.h', 'cet.h', 'pthr
+   endif
+ endforeach
+ 
+-foreach f : ['strtof', 'mkostemp', 'timespec_get', 'memfd_create', 'random_r',
+-             'flock', 'strtok_r', 'getrandom', 'qsort_r', 'qsort_s']
++foreach f : ['strtof', 'mkostemp', 'timespec_get', 'random_r',
++             'flock', 'strtok_r', 'qsort_r', 'qsort_s']
+   if cc.has_function(f)
+     pre_args += '-DHAVE_@0@'.format(f.to_upper())
+   endif
+ endforeach
+ 
++foreach f, prefix : {
++    'memfd_create': '#include <sys/mman.h>',
++    'getrandom': '#include <sys/random.h>',
++  }
++  if cc.has_function(f, args: pre_args, prefix : prefix)
++    pre_args += ' -DHAVE_@0@'.format(f.to_upper())
++  endif
++endforeach
++
+ if cc.has_header_symbol('errno.h', 'program_invocation_name',
+                         args : '-D_GNU_SOURCE')
+    pre_args += '-DHAVE_PROGRAM_INVOCATION_NAME'
