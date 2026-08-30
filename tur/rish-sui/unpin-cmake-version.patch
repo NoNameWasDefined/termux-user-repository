@@ -1,0 +1,11 @@
+diff --git a/module/build.gradle b/module/build.gradle
+--- a/module/build.gradle
++++ b/module/build.gradle
+@@ -27,7 +27,6 @@ android {
+     externalNativeBuild {
+         cmake {
+             path "src/main/cpp/CMakeLists.txt"
+-            version "3.10.2"
+         }
+     }
+     buildTypes {
